@@ -1,65 +1,30 @@
 Param(
     [string] $AdminID,
     [string] $AdminPWD,
-    [bool] $Overwrite = $false,
     [bool] $AccountEnabled = $true
 )
 
-$DEFAULT_PASSWORD = "Jelp92827"
+# Include our libraries
+. "./lib/util.ps1"
+. "./lib/azureAdLib.ps1"
 
-Function ConnectToAzureAD{
-    Param(
-        [string] $AdminID,
-        [string] $AdminPWD
-    )
+Clear-Host
 
-    $secureAdminPWD = ConvertTo-SecureString -String $AdminPWD -AsPlainText -Force
-    $credential = New-Object System.Management.Automation.PSCredential $AdminID, $secureAdminPWD
-    $tenant = Connect-AzureAD -Credential $credential
+$TENANT = ConnectToAzureAD $AdminID $AdminPWD
+$TENANT_DOMAIN = $tenant.TenantDomain
+$SKU_ID = (Get-AzureADSubscribedSku | Where-Object -Property SkuPartNumber -Value $SkuName -EQ).SkuID
+$DEFAULT_PASSWORD = GetA-Random-Password
 
-    return $tenant
-}
-
-Function CreateUserInAzureAD{
-    param(
-        [string] $tenantDomain,
-        [object] $user,
-        [string] $userPassword
-    )
-
-    $upn = $user.Alias + "@" + $tenantDomain
-    Write-Output "Creating user in Azure AD with a UPN of $upn"
-    
-    $PasswordProfile = New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile
-    $PasswordProfile.Password = $UserPassword
-
-    $userAzureAD = New-AzureADUser -UserPrincipalName $upn -DisplayName $user.DisplayName -PasswordProfile $PasswordProfile -AccountEnabled $AccountEnabled -MailNickName $user.Alias
-
-    return $userAzureAD
-}
-
-function Get-UPN{
-    Param( [string] $alias,
-    [string] $tenantDomain)
-
-    $upn = $lias + "@" + $tenantDomain
-
-    return $upn
-}
-
-$tenant = ConnectToAzureAD $AdminID $AdminPWD
-$tenantDomain = $tenant.TenantDomain
-
-Write-Output ("Connected to tenant " + $tenantDomain)
-
-if ($Overwrite -eq $true) {
-    Import-Csv -Path "personas.csv" | ForEach-Object{
-        $upn = Get-UPN -alias $_.Alias -tenantDomain $tenantDomain
-        Write-Output "Removing user $upn from Azure AD..."
-        Remove-AzureADUser -ObjectId $upn
-    }
-}
+Write-Output ( "Connected to tenant $TENANT_DOMAIN" )
+Write-Output ( "The password for users will be $DEFAULT_PASSWORD"  )
 
 Import-Csv -Path "personas.csv" | ForEach-Object{
-    CreateUserInAzureAD -user $_ -userPassword $DEFAULT_PASSWORD -tenantDomain $tenantDomain
+ 
+    # Add more needed properties for Azure AD
+    $_ | Add-Member UniversalPrincipalName  ( FormatUPN -alias $_.Alias -TenantDomain $TENANT_DOMAIN )    # UPN
+    $_ | Add-Member SkuID (Get-AzureADSubscribedSku | Where-Object -Property SkuPartNumber -Value $$_.Office365Plan -EQ).SkuID                                                                         # SKU for License Assignment
+    $_ | Add-Member UserPassword $DEFAULT_PASSWORD
+
+    # Create the user in Azure AD
+    CreateUserInAzureAD -UserData $_   
 }

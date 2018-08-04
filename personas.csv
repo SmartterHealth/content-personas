@@ -1,4 +1,5 @@
-Alias,Title,FirstName,LastName,DisplayName,UsageLocation
-drstrange,Dr.,Stephen,Strange,Dr. Strange,US
-drwatt,Dr.,J.J.,Watt,Dr. Watt,US
-nursejazz,Nurse,Holly,Jazz,Nurse Jazz,US
+Alias,Title,FirstName,LastName,DisplayName,JobTitle,Department,Office,City,State,Office365Plans,AccountEnabled,UsageLocation
+drstrange,Dr.,Stephen,Strange,Dr. Strange,Doctor,Trauma Care,Building 1,Nashville,TN,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US
+drwatt,Dr.,J.J.,Watt,Dr. Watt,Doctor,Radiology,Building 2,Houston,TX,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US
+nursejazz,Nurse,Holly,Jazz,Nurse Jazz,Nurse,Radiology,Building 2,Houston,TX,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US
+nursesmith,Nurse,Nancy,Smith,Nurse Nancy,Nurse,Trauma Care,Building 1,Nashville,TN,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US
