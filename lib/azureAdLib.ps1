@@ -6,9 +6,6 @@ Function ConnectToAzureAD
 
     $tenant = Connect-AzureAD -Credential $credential
 
-    #$exchangeSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "https://outlook.office365.com/powershell-liveid/" -Credential $credential -Authentication "Basic" -AllowRedirection
-    #Import-PSSession $ExchangeSession -AllowClobber
-
     return $tenant
 }
 
@@ -17,7 +14,7 @@ Function CreateUserInAzureAD
 
     Param (
         [object] $UserData,
-        [bool] $OverWrite = $false
+        [bool] $OverWrite = $true
     )
 
     try 
@@ -34,7 +31,16 @@ Function CreateUserInAzureAD
     $PasswordProfile = New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile
     $PasswordProfile.Password = $UserData.UserPassword
     $accountEnabled = ([System.Convert]::ToBoolean($ud.AccountEnabled))
-    $newUser = New-AzureADUser -AccountEnabled $accountEnabled -UserPrincipalName $ud.UniversalPrincipalName -MailNickName $ud.Alias -UsageLocation $ud.UsageLocation -DisplayName $ud.DisplayName -PasswordProfile $PasswordProfile -JobTitle $ud.JobTitle -Department $ud.Department -PhysicalDeliveryOfficeName $ud.Office -City $ud.City -State $ud.State
+    $adUser = $null
+
+    try {
+        $adUser = Get-AzureADUser -ObjectId $ud.UniversalPrincipalName
+    } catch {
+        $adUser = New-AzureADUser -AccountEnabled $accountEnabled -UserPrincipalName $ud.UniversalPrincipalName -MailNickName $ud.Alias -UsageLocation $ud.UsageLocation -DisplayName $ud.DisplayName -PasswordProfile $PasswordProfile
+    }
+
+    # Update the user
+    Set-AzureADUser -ObjectId $ud.UniversalPrincipalName -AccountEnabled $accountEnabled -DisplayName $ud.DisplayName -PasswordProfile $PasswordProfile -JobTitle $ud.JobTitle -Department $ud.Department -PhysicalDeliveryOfficeName $ud.Office -City $ud.City -State $ud.State
 
     # Licensing    
     $plans = $ud.Office365Plans.split(";")  # TODO: Handle this better... could get an empty/null value
@@ -54,5 +60,5 @@ Function CreateUserInAzureAD
         Set-AzureADUserLicense -ObjectId  $ud.UniversalPrincipalName -AssignedLicenses $AssignedLicenses
     }
     
-    return $newUser
+    return $adUser
 }

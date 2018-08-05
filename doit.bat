@@ -9,3 +9,5 @@ PowerShell.exe -Command ".\Import-Personas.ps1"
 # Connect-SmartterHealth -TenantName "M365x664893.onmicrosoft.com" -AdminID admin@M365x664893.onmicrosoft.com
 
 # .\Remove-Personas.ps1 -AdminID admin@M365x664893.onmicrosoft.com -AdminPWD tdurham@649715
+
+$newUser = New-AzureADUser -AccountEnabled $accountEnabled -UserPrincipalName $ud.UniversalPrincipalName -MailNickName $ud.Alias -UsageLocation $ud.UsageLocation -DisplayName $ud.DisplayName -PasswordProfile $PasswordProfile -JobTitle $ud.JobTitle -Department $ud.Department -PhysicalDeliveryOfficeName $ud.Office -City $ud.City -State $ud.State

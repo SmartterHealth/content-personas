@@ -1,7 +1,8 @@
 Param(
     [string] $AdminID,
     [string] $AdminPWD,
-    [bool] $AccountEnabled = $true
+    [bool] $AccountEnabled = $true,
+    [bool] $OverWrite = $true
 )
 
 # Include our libraries
@@ -31,5 +32,5 @@ Import-Csv -Path "personas.csv" | ForEach-Object{
     $_ | Add-Member UserPassword $DEFAULT_PASSWORD
 
     # Create the user in Azure AD
-    CreateUserInAzureAD -UserData $_   
+    CreateUserInAzureAD -UserData $_ -OverWrite $OverWrite
 }
