@@ -1,12 +1,9 @@
 Function ConnectToAzureAD
 {
     Param(
-        [string] $AdminID,
-        [string] $AdminPWD
+        $credential
     )
 
-    $secureAdminPWD = ConvertTo-SecureString -String $AdminPWD -AsPlainText -Force
-    $credential = New-Object System.Management.Automation.PSCredential $AdminID, $secureAdminPWD
     $tenant = Connect-AzureAD -Credential $credential
 
     #$exchangeSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "https://outlook.office365.com/powershell-liveid/" -Credential $credential -Authentication "Basic" -AllowRedirection
@@ -19,7 +16,8 @@ Function CreateUserInAzureAD
 {
 
     Param (
-        [object] $UserData
+        [object] $UserData,
+        [bool] $OverWrite = $false
     )
 
     try 
@@ -46,7 +44,7 @@ Function CreateUserInAzureAD
     
     foreach($plan in $plans)
     {
-        Write-Output "Assining plan $plan to ($ud.Alias)"
+        Write-Output "Assining plan $plan to ($ud.UniversalPrincipalName)"
         #Create the AssignedLicense object with the License and DisabledPlans earlier created
         $License = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
         $License.SkuId = ( Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -eq $plan}  ).SkuId

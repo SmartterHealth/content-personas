@@ -3,35 +3,18 @@ Param(
     [string] $AdminPWD
 )
 
-Function ConnectToAzureAD{
-    Param(
-        [string] $AdminID,
-        [string] $AdminPWD
-    )
+# Include our libraries
+. "./lib/Util.ps1"
+. "./lib/AzureAdLib.ps1"
 
-    $secureAdminPWD = ConvertTo-SecureString -String $AdminPWD -AsPlainText -Force
-    $credential = New-Object System.Management.Automation.PSCredential $AdminID, $secureAdminPWD
-    $tenant = Connect-AzureAD -Credential $credential
-
-    return $tenant
-}
-
-function Get-UPN{
-    Param( [string] $alias,
-    [string] $tenantDomain)
-
-    $upn = $alias + "@" + $tenantDomain
-
-    return $upn
-}
-
-$tenant = ConnectToAzureAD $AdminID $AdminPWD
-$tenantDomain = $tenant.TenantDomain
+$CREDENTIAL = GetYourCredential $AdminID $AdminPWD
+$TENANT = ConnectToAzureAD $CREDENTIAL
+$TENANT_DOMAIN = $TENANT.TenantDomain
 
 Write-Output ("Connected to tenant " + $tenantDomain)
 
 Import-Csv -Path "personas.csv" | ForEach-Object{
-    $upn = Get-UPN -alias $_.Alias -tenantDomain $tenantDomain
+    $upn = ( FormatUPN -Alias $_.Alias -TenantDomain $TENANT_DOMAIN ) 
     Write-Output "Removing user $upn from Azure AD..."
     Remove-AzureADUser -ObjectId $upn
 }

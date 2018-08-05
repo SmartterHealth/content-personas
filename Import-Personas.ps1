@@ -5,15 +5,16 @@ Param(
 )
 
 # Include our libraries
-. "./lib/util.ps1"
-. "./lib/azureAdLib.ps1"
+. "./lib/Util.ps1"
+. "./lib/AzureAdLib.ps1"
 
 Clear-Host
 
-$TENANT = ConnectToAzureAD $AdminID $AdminPWD
+$CREDENTIAL = GetYourCredential $AdminID $AdminPWD
+
+$TENANT = ConnectToAzureAD $CREDENTIAL
 $TENANT_DOMAIN = $tenant.TenantDomain
-$SKU_ID = (Get-AzureADSubscribedSku | Where-Object -Property SkuPartNumber -Value $SkuName -EQ).SkuID
-$DEFAULT_PASSWORD = GetA-Random-Password
+$DEFAULT_PASSWORD = GetARandomPassword
 
 Write-Output ( "Connected to tenant $TENANT_DOMAIN" )
 Write-Output ( "The password for users will be $DEFAULT_PASSWORD"  )
@@ -22,7 +23,6 @@ Import-Csv -Path "personas.csv" | ForEach-Object{
  
     # Add more needed properties for Azure AD
     $_ | Add-Member UniversalPrincipalName  ( FormatUPN -alias $_.Alias -TenantDomain $TENANT_DOMAIN )    # UPN
-    $_ | Add-Member SkuID (Get-AzureADSubscribedSku | Where-Object -Property SkuPartNumber -Value $$_.Office365Plan -EQ).SkuID                                                                         # SKU for License Assignment
     $_ | Add-Member UserPassword $DEFAULT_PASSWORD
 
     # Create the user in Azure AD
