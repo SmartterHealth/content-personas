@@ -7,14 +7,19 @@ Param(
 # Include our libraries
 . "./lib/Util.ps1"
 . "./lib/AzureAdLib.ps1"
+. "./lib/ExchangeOnlineLib.ps1"
 
 Clear-Host
 
 $CREDENTIAL = GetYourCredential $AdminID $AdminPWD
 
+# Init AAD
 $TENANT = ConnectToAzureAD $CREDENTIAL
 $TENANT_DOMAIN = $tenant.TenantDomain
 $DEFAULT_PASSWORD = GetARandomPassword
+
+# Init Exo
+ConnectToExo $CREDENTIAL
 
 Write-Output ( "Connected to tenant $TENANT_DOMAIN" )
 Write-Output ( "The password for users will be $DEFAULT_PASSWORD"  )
