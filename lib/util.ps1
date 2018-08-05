@@ -1,4 +1,31 @@
+Function ApplyLicensingToUser{
 
+    Param(
+        [object] $UserData
+    )
+
+     # Licensing    
+     $plans = $UserData.Office365Plans.split(";")  # TODO: Handle this better... could get an empty/null value
+    
+     #Create the AssignedLicenses Object 
+     $AssignedLicenses = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses
+     
+     foreach($plan in $plans)
+     {
+         [string] $upn = $UserData.UniversalPrincipalName
+         Write-Output "Assigning plan $plan to $upn"
+         #Create the AssignedLicense object with the License and DisabledPlans earlier created
+         $License = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense
+         $License.SkuId = ( Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -eq $plan}  ).SkuId
+         $AssignedLicenses.AddLicenses = $License
+ 
+         #Assign the license to the user
+         $result = Set-AzureADUserLicense -ObjectId  $UserData.UniversalPrincipalName -AssignedLicenses $AssignedLicenses
+
+         return $result
+     }
+
+}
 function FormatUPN{
     Param( [string] $Alias,
     [string] $TenantDomain)

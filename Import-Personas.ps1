@@ -32,5 +32,16 @@ Import-Csv -Path "personas.csv" | ForEach-Object{
     $_ | Add-Member UserPassword $DEFAULT_PASSWORD
 
     # Create the user in Azure AD
+    # CreateUserInAzureAD -UserData $_ -OverWrite $OverWrite
+
+    # Exo
+    #SetupMailbox -UserData $_ -OverWrite $Overwrite
+
+    #Start-Sleep 1
+
+    # Create the user in Azure AD
     CreateUserInAzureAD -UserData $_ -OverWrite $OverWrite
+
+    # Licensing
+    ApplyLicensingToUser -UserData $_
 }
