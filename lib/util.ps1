@@ -48,11 +48,19 @@ Function GetYourCredential
     Param(
 
         [string] $AdminID,
-        [string] $AdminPWD
+        [string] $AdminPWD,
+        [switch] $SpoCsom
     )
 
-    $secureAdminPWD = ConvertTo-SecureString -String $AdminPWD -AsPlainText -Force
-    $credential = New-Object System.Management.Automation.PSCredential $AdminID, $secureAdminPWD
-    
-    return $credential
+    if ( $SpoCsom.IsPresent -eq $true ) {
+        
+        $credential = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($AdminID , (ConvertTo-SecureString -String $AdminPWD -AsPlainText -Force))
+        return $credential
+
+    } else {
+
+        $credential = New-Object System.Management.Automation.PSCredential $AdminID, ( ConvertTo-SecureString -String $AdminPWD -AsPlainText -Force )
+        
+        return $credential
+    }
 }

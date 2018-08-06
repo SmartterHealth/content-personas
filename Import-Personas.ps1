@@ -9,6 +9,7 @@ Param(
 . "./lib/Util.ps1"
 . "./lib/AzureAdLib.ps1"
 . "./lib/ExchangeOnlineLib.ps1"
+. "./lib/SharePointOnlineLib.ps1"
 
 Clear-Host
 
@@ -25,6 +26,8 @@ ConnectToExo $CREDENTIAL
 Write-Output ( "Connected to tenant $TENANT_DOMAIN" )
 Write-Output ( "The password for users will be $DEFAULT_PASSWORD"  )
 
+ConnectToSPO -TenantDomain $TENANT_DOMAIN -AdminID $AdminID -AdminPWD $AdminPWD
+
 Import-Csv -Path "personas.csv" | ForEach-Object{
  
     # Add more needed properties for Azure AD
@@ -40,8 +43,12 @@ Import-Csv -Path "personas.csv" | ForEach-Object{
     #Start-Sleep 1
 
     # Create the user in Azure AD
-    CreateUserInAzureAD -UserData $_ -OverWrite $OverWrite
+    #CreateUserInAzureAD -UserData $_ -OverWrite $OverWrite
 
     # Licensing
-    ApplyLicensingToUser -UserData $_
+    #ApplyLicensingToUser -UserData $_
+
+    
+
+
 }
