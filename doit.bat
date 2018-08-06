@@ -17,3 +17,11 @@ $newUser = New-AzureADUser -AccountEnabled $accountEnabled -UserPrincipalName $u
 
 
 .\Import-Personas.ps1 -AdminID admin@M365x664893.onmicrosoft.com -AdminPWD tdurham@649715
+
+#  (Get-UserPhoto "Dr. Strange").PictureData | Set-Content "drstrange.jpg"  -Encoding byte
+#  Set-UserPhoto -Identity "Dr. Strange" -PictureData ([System.IO.File]::ReadAllBytes((Resolve-Path ".\photos\drstrange.jpg") )) -Confirm:$Y
+
+
+$users = Get-AzureADUser
+
+Get-AzureADUser | ForEach-Object { (Get-UserPhoto $_.DisplayName).PictureData | Set-Content ($_.DisplayName + ".jpg")  -Encoding byte }
