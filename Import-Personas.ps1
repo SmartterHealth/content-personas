@@ -26,7 +26,7 @@ ConnectToExo $CREDENTIAL
 Write-Output ( "Connected to tenant $TENANT_DOMAIN" )
 Write-Output ( "The password for users will be $DEFAULT_PASSWORD"  )
 
-ConnectToSPO -TenantDomain $TENANT_DOMAIN -AdminID $AdminID -AdminPWD $AdminPWD
+#ConnectToSPO -TenantDomain $TENANT_DOMAIN -AdminID $AdminID -AdminPWD $AdminPWD
 
 Import-Csv -Path "personas.csv" | ForEach-Object{
  
@@ -35,7 +35,7 @@ Import-Csv -Path "personas.csv" | ForEach-Object{
     $_ | Add-Member UserPassword $DEFAULT_PASSWORD
 
     # Create the user in Azure AD
-    # CreateUserInAzureAD -UserData $_ -OverWrite $OverWrite
+    CreateUserInAzureAD -UserData $_ -OverWrite $OverWrite
 
     # Exo
     #SetupMailbox -UserData $_ -OverWrite $Overwrite
@@ -46,7 +46,7 @@ Import-Csv -Path "personas.csv" | ForEach-Object{
     #CreateUserInAzureAD -UserData $_ -OverWrite $OverWrite
 
     # Licensing
-    #ApplyLicensingToUser -UserData $_
+    ApplyLicensingToUser -UserData $_
 
     
 

@@ -22,14 +22,14 @@ try {
     #Authenticate
     $credentials = New-Object Microsoft.SharePoint.Client.SharePointOnlineCredentials($AdminID , (ConvertTo-SecureString -String $AdminPWD -AsPlainText -Force))
     $context.Credentials = $credentials
-
+<# 
     
     #Create an Object [People Manager] to retrieve profile information
     $userProfileManager = New-Object Microsoft.SharePoint.Client.UserProfiles.PeopleManager($context)
 
     $userProfile = $userProfileManager.GetPropertiesFor($AdminID)
     $context.Load($userprofile)
-    $context.ExecuteQuery()
+    $context.ExecuteQuery() #>
 
     return $context
  }

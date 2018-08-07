@@ -1,10 +1,10 @@
 Function ConnectToAzureAD
 {
     Param(
-        $credential
+        $credentials
     )
 
-    $tenant = Connect-AzureAD -Credential $credential
+    $tenant = Connect-AzureAD -Credential $credentials
 
     return $tenant
 }
