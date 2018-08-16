@@ -7,13 +7,11 @@ Param(
 
 Clear-Host
 
-
 # Include our libraries
 . "./lib/Util.ps1"
 . "./lib/AzureAdLib.ps1"
 . "./lib/ExchangeOnlineLib.ps1"
 #. "./lib/SharePointOnlineLib.ps1"
-
 
 $CREDENTIAL = GetYourCredential $AdminID $AdminPWD
 
@@ -29,29 +27,48 @@ ConnectToExo $CREDENTIAL
 Write-Output ( "Connected to tenant $TENANT_DOMAIN" )
 Write-Output ( "The password for users will be $DEFAULT_PASSWORD"  )
 
-Import-Csv -Path "personas.csv" | ForEach-Object{
+$USERLIST = Import-Csv -Path "personas.csv" | Sort-Object -Property Manager
 
-    # Grab some commonly used values
-    [string] $alias = $_.Alias
-    [string] $managerAlias = $_.Manager
- 
+function ProcessUserHeirarchy() {
+    Param(
+        [object] $csvUserParent,
+        [object] $csvUserCurrent,
+        $level
+    )
+    
+    # Calculate some often used properties
+    $alias = $csvUserCurrent.Alias
+    
     # Add more needed properties for Azure AD
-    $_ | Add-Member UniversalPrincipalName  ( FormatUPN -alias $alias -TenantDomain $TENANT_DOMAIN )    # UPN
-    $_ | Add-Member UserPassword $DEFAULT_PASSWORD
+    $csvUserCurrent | Add-Member UniversalPrincipalName  ( FormatUPN -alias $alias -TenantDomain $TENANT_DOMAIN )    # UPN
+    $csvUserCurrent | Add-Member UserPassword $DEFAULT_PASSWORD
+    $csvUserCurrent | Add-Member ObjectID $null
 
     # Create the user in Azure AD
-    Write-Host "Creating user $alias in Azure AD..."
+    PrintMessage -message "Creating user $alias in Azure AD..." -level $level
     $newUser = CreateUserInAzureAD -UserData $_ -OverWrite $OverWrite
-
-    if ($managerAlias) {
-        $manager = $MANAGERS[$managerAlias]
-        Write-Host "Setting manager for user $alias to $managerAlias..."
-        Set-AzureADUserManager -ObjectID $newUser.ObjectID -RefObjectId $manager.ObjectID
-    } else {
-        $MANAGERS.Add($alias, $newUser)
-    }
+    $csvUserCurrent.ObjectID = $newUser.ObjectID    
+    
+    if( $null -ne $csvUserParent) {
+        $csvUserParentAlias = $csvUserParent.Alias
+        Write-Host $('--' * $level ) -NoNewline
+        PrintMessage -message "Setting  $alias's manager to $csvUserParentAlias in Azure AD..." -level $level
+    }  
 
     # Licensing
-    ApplyLicensingToUser -UserData $_
+    PrintMessage -message "Assigning plan(s) to $alias..." -level $level
+    ApplyLicensingToUser -csvUser $csvUserCurrent
 
+    # Process the direct reports (if any) for this user
+    $USERLIST | Where-Object { $_.Manager -eq $alias } | ForEach-Object {
+        ProcessUserHeirarchy -csvUserParent $csvUserCurrent -csvUserCurrent $_ -level ( $level + 1 )
+    }
+
+    Write-Host $('--' * $level ) -NoNewline
+    Write-Host "Successfully created user $alias in Azure AD!"
+}
+
+# Grab the first level of users (users W) a manager, as they should be top-level objects with 0 or mre direct reports
+$USERLIST| Where-Object { $_.Manager -eq "" } | ForEach-Object {
+    ProcessUserHeirarchy -csvUserParent $null -csvUserCurrent $_ -level $nextLevel
 }
