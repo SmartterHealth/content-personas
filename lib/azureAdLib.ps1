@@ -41,6 +41,9 @@ Function CreateUserInAzureAD
 
     # Update the user
     Set-AzureADUser -ObjectId $ud.UniversalPrincipalName -AccountEnabled $accountEnabled -DisplayName $ud.DisplayName -JobTitle $ud.JobTitle -Department $ud.Department -PhysicalDeliveryOfficeName $ud.Office -City $ud.City -State $ud.State
+    if ($ud.Manager) {
+        $ud.Manager
+    }
     
     return $adUser
 }

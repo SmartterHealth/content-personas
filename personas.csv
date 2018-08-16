@@ -1,2 +1,6 @@
-Alias,Title,FirstName,LastName,DisplayName,JobTitle,Department,Office,City,State,Office365Plans,AccountEnabled,UsageLocation,Skills
-drstrange,Dr.,Stephen,Strange,Dr. Strange,Doctor,Trauma Care,Building 1,Nashville,TN,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US
+Alias,Manager,Title,FirstName,LastName,DisplayName,JobTitle,Department,Office,City,State,SPS-Skills,SPS-School,Office365Plans,AccountEnabled,UsageLocation
+drpatel,,Dr.,Shrini,Patel,Dr. Patel,Doctor,Chief of Medicine,Building 2,Minneapolis,MN,Hospital Managment;Health Regulations;Policy Changes;Clinical Guidance to Physicians;Developing a Budget;Coordinating Community Relationships;Public Speaking,Duke University Medical Center;Baylor College of Medicine,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US
+drstrange,,Dr.,Stephen,Strange,Dr. Strange,Doctor,Trauma Care,Building 1,Nashville,TN,Hospital Medicine;Hospital Management;Outcomes Research;Teaching;Strategic Planning;EMR;Innovation,Vanderbilt University School of Medicine;University of Tennessee - Knoxville,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US
+drwatt,drpatel,Dr.,J.J.,Watt,Dr. Watt,Doctor,Radiology,Building 2,Houston,TX,Surgery;Cancer Treatment;Radiation Treatment;Clinical Trails;Chemotherapy,Baylor University;John Hopkins University,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US
+nursejazz,,Nurse,Holly,Jazz,Nurse Jazz,Nurse,Radiology,Building 2,Houston,TX,Cardiopulmonary Physical Therapy;Heat Illness Prevention;CITI Program - Human Subject Research,,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US
+nursesmith,,Nurse,Nancy,Smith,Nurse Nancy,Nurse,Trauma Care,Building 1,Nashville,TN,,,ENTERPRISEPREMIUM;EMSPREMIUM,TRUE,US

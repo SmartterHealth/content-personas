@@ -35,7 +35,7 @@ Import-Csv -Path "./personas.csv" | ForEach-Object {
         }
 
         try {
-            #Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Skills" -Values "Golf", "Tennis" -ErrorAction "Continue"
+            Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Skills" -Values "Golf", "Tennis" -ErrorAction "Continue"
         } 
         catch { 
             Write-Warning "No user profile has been provisioned for user $account. Please wait a few minutes before trying again."
