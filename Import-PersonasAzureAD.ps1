@@ -53,6 +53,7 @@ function ProcessUserHeirarchy() {
         $csvUserParentAlias = $csvUserParent.Alias
         Write-Host $('--' * $level ) -NoNewline
         PrintMessage -message "Setting  $alias's manager to $csvUserParentAlias in Azure AD..." -level $level
+        Set-AzureADUserManager -ObjectID $newUser.ObjectID -RefObjectId $csvUserParent.ObjectID
     }  
 
     # Licensing
