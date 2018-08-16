@@ -26,4 +26,4 @@ $users = Get-AzureADUser
 
 Get-AzureADUser | ForEach-Object { (Get-UserPhoto $_.DisplayName).PictureData | Set-Content ($_.DisplayName + ".jpg")  -Encoding byte }
 
--AdminID tyler@smartterhealth.com -AdminPWD 72%JNKyfK%
+-AdminID tyler@smartterhealth.com -AdminPWD Jelp@Wonder
