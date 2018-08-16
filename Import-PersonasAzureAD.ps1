@@ -11,7 +11,6 @@ Clear-Host
 . "./lib/Util.ps1"
 . "./lib/AzureAdLib.ps1"
 . "./lib/ExchangeOnlineLib.ps1"
-#. "./lib/SharePointOnlineLib.ps1"
 
 $CREDENTIAL = GetYourCredential $AdminID $AdminPWD
 
@@ -19,13 +18,10 @@ $CREDENTIAL = GetYourCredential $AdminID $AdminPWD
 $TENANT = ConnectToAzureAD $CREDENTIAL
 $TENANT_DOMAIN = $tenant.TenantDomain
 $DEFAULT_PASSWORD = GetARandomPassword
-$MANAGERS = [ordered]@{}
-
-# Init Exo
-ConnectToExo $CREDENTIAL
 
 Write-Output ( "Connected to tenant $TENANT_DOMAIN" )
 Write-Output ( "The password for users will be $DEFAULT_PASSWORD"  )
+Write-Output "`n"
 
 $USERLIST = Import-Csv -Path "personas.csv" | Sort-Object -Property Manager
 
