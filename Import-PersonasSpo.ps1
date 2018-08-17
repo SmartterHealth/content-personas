@@ -23,24 +23,18 @@ Import-Csv -Path "./personas.csv" | ForEach-Object {
     # Calculate & add more needed properties for SharePoint
     $_ | Add-Member UniversalPrincipalName  ( FormatUPN -alias $_.Alias -TenantDomain $g_tenantDomain )    # UPN
 
-    [bool] $canResume = $true
-
     $account = $_.UniversalPrincipalName
     $skills = SplitToArray -value $_.Skills -delim ";"
     $school = SplitToArray -value $_.School -delim ";"
+    $interests = SplitToArray -value $_.Interests -delim ";"
 
-    
-    
+    Write-Output "Setting SPS-Skills for $account..."
+    Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Skills" -Values $skills
 
-    try {
-        Write-Output "Setting SPS-Skills for $account..."
-        Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Skills" -Values $skills
+    Write-Output "Setting SPS-School for $account..."
+    Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-School" -Values $school
 
-        Write-Output "Setting SPS-School for $account..."
-        Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-School" -Values $school
-    } 
-    catch { 
-        Write-Warning "No user profile has been provisioned for user $account. Please wait a few minutes before trying again."
-    }
+    Write-Output "Setting SPS-Interests for $account..."
+    Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Interests" -Values $interests
     
 }
