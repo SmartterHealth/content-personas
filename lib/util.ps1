@@ -73,3 +73,12 @@ Function PrintMessage{
     Write-Host $('--' * $level ) -NoNewline
     Write-Host $message
 }
+
+function SplitToArray{
+    Param(
+        [string] $value = "",
+        [string] $delim = ";"
+    )
+
+    return $value.Split($delim)
+}

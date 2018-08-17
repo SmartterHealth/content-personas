@@ -25,20 +25,22 @@ Import-Csv -Path "./personas.csv" | ForEach-Object {
 
     [bool] $canResume = $true
 
-    $account= $_.UniversalPrincipalName
+    $account = $_.UniversalPrincipalName
+    $skills = SplitToArray -value $_.Skills -delim ";"
+    $school = SplitToArray -value $_.School -delim ";"
 
     
+    
+
+    try {
         Write-Output "Setting SPS-Skills for $account..."
+        Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Skills" -Values $skills
 
-        trap {
-            "Error!"
-        }
-
-        try {
-            Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Skills" -Values "Golf", "Tennis" -ErrorAction "Continue"
-        } 
-        catch { 
-            Write-Warning "No user profile has been provisioned for user $account. Please wait a few minutes before trying again."
-        }
+        Write-Output "Setting SPS-School for $account..."
+        Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-School" -Values $school
+    } 
+    catch { 
+        Write-Warning "No user profile has been provisioned for user $account. Please wait a few minutes before trying again."
+    }
     
 }
