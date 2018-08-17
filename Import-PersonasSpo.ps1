@@ -20,21 +20,30 @@ $g_adminSiteUrl = "https://" + $g_tenantName + "-admin.sharepoint.com"
 Connect-PnPOnline -Url $g_adminSiteUrl -Credentials $g_credentials 
 
 Import-Csv -Path "./personas.csv" | ForEach-Object {
-    # Calculate & add more needed properties for SharePoint
-    $_ | Add-Member UniversalPrincipalName  ( FormatUPN -alias $_.Alias -TenantDomain $g_tenantDomain )    # UPN
 
-    $account = $_.UniversalPrincipalName
-    $skills = SplitToArray -value $_.Skills -delim ";"
-    $school = SplitToArray -value $_.School -delim ";"
-    $interests = SplitToArray -value $_.Interests -delim ";"
+    $alias =  ($_.Alias + "").Trim()
 
-    Write-Output "Setting SPS-Skills for $account..."
-    Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Skills" -Values $skills
+    if ($alias -ne "") {
+        # Calculate & add more needed properties for SharePoint
+        $_ | Add-Member UniversalPrincipalName  ( FormatUPN -alias $alias -TenantDomain $g_tenantDomain )    # UPN
 
-    Write-Output "Setting SPS-School for $account..."
-    Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-School" -Values $school
+        $account = $_.UniversalPrincipalName
+        $skills = SplitToArray -value $_.Skills -delim ";"
+        $school = SplitToArray -value $_.School -delim ";"
+        $interests = SplitToArray -value $_.Interests -delim ";"
+        $askMeAbout = SplitToArray -value $_.AskMeAbout -delim ";"
 
-    Write-Output "Setting SPS-Interests for $account..."
-    Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Interests" -Values $interests
+        Write-Output "Setting SPS-Skills for $account..."
+        Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Skills" -Values $skills
+
+        Write-Output "Setting SPS-School for $account..."
+        Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-School" -Values $school
+
+        Write-Output "Setting SPS-Interests for $account..."
+        Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Interests" -Values $interests
+
+        Write-Output "Setting SPS-Responsibility (Ask Me About) for $account..."
+        Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Responsibility" -Values $askMeAbout
+    }
     
 }
