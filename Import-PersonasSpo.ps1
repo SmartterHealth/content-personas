@@ -3,9 +3,12 @@ Param(
     [string] $AdminPWD
 )
 
+Clear-Host
+
 # Include our libraries
 . "./lib/Util.ps1"
 . "./lib/AzureAdLib.ps1"
+. "./lib/ExchangeOnlineLib.ps1"
 
 # Grab credentials
 $g_credentials = GetYourCredential -AdminID $AdminID -AdminPWD $AdminPWD
@@ -15,6 +18,9 @@ $g_tenant = ConnectToAzureAD -Credentials $g_credentials
 $g_tenantDomain = $g_tenant.TenantDomain
 $g_tenantName = $g_tenantDomain.Split(".")[0]
 $g_adminSiteUrl = "https://" + $g_tenantName + "-admin.sharepoint.com"
+
+# Log into Exchange Online
+ConnectToExo -Credentials $g_credentials
 
 # Connect to PnPOnline so we can use their nifty utilities
 Connect-PnPOnline -Url $g_adminSiteUrl -Credentials $g_credentials 
@@ -44,6 +50,11 @@ Import-Csv -Path "./personas.csv" | ForEach-Object {
 
         Write-Output "Setting SPS-Responsibility (Ask Me About) for $account..."
         Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Responsibility" -Values $askMeAbout
+
+        Write-Output "Setting photo for $account..."
+        $pathToPhoto = Resolve-Path -Path "./photos/$alias.jpg"
+        $photoData = [System.IO.File]::ReadAllBytes($pathToPhoto)
+        Set-UserPhoto -Identity $account -PictureData $photoData -Confirm:$Y
     }
     
 }

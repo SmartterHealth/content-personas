@@ -27,3 +27,15 @@ $users = Get-AzureADUser
 Get-AzureADUser | ForEach-Object { (Get-UserPhoto $_.DisplayName).PictureData | Set-Content ($_.DisplayName + ".jpg")  -Encoding byte }
 
 -AdminID tyler@smartterhealth.com -AdminPWD Jelp@Wonder
+
+
+
+The WinRM client cannot process the request. The connection string should be of the form [<transport>://]<host>[:<port>][/<suffix>] where transport is one of "http" or "https". Transport, port and suffix are optional.
+The host may be a hostname or an IP address. For IPv6 addresses, enclose the address in brackets - e.g. "http://[1::2]:80/wsman". Change the connection string and try the request again.
+[Server=BN6PR05MB3042,RequestId=f14d95d3-a51e-4e2c-af0b-b4a58053431f,TimeStamp=8/18/2018 3:10:54 PM] .
+    + CategoryInfo          : NotSpecified: (:) [Set-UserPhoto], CmdletProxyException
+
+
+
+
+    Set-UserPhoto "drstrange@M365x664893.onmicrosoft.com" -PictureData ([Byte[]] $(Get-Content -Path (Resolve-Path ".\photos\z-no-photo.jpg") -Encoding Byte -ReadCount 0)) -Confirm:$false

@@ -1,12 +1,12 @@
 Function ConnectToExo
 {
     Param(
-        $credential
+        $credentials
     )
 
     if (-not (Get-Command Get-Mailbox*) )
     {
-        $session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "https://outlook.office365.com/powershell-liveid/" -Credential $credential -Authentication "Basic" -AllowRedirection
+        $session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/?proxymethod=rps -Credential $credentials -Authentication Basic -AllowRedirection  #New-PSSession -Credential $credentials -ConfigurationName Microsoft.Exchange #-Authentication Basic -AllowRedirection
         Import-PSSession $session -AllowClobber
     }
 }
