@@ -5,6 +5,8 @@ Param(
 
 Clear-Host
 
+Write-Output "This script will set user profile fields and upload user photos... It will take a minute or two to run..."
+
 # Include our libraries
 . "./lib/Util.ps1"
 . "./lib/AzureAdLib.ps1"
