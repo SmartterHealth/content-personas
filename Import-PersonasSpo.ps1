@@ -55,10 +55,14 @@ Import-Csv -Path "./personas.csv" | ForEach-Object {
         Write-Output "Setting SPS-Responsibility (Ask Me About) for $account..."
         Set-PnPUserProfileProperty -Account $account -PropertyName "SPS-Responsibility" -Values $askMeAbout
 
-        Write-Output "Setting photo for $account..."
+        Write-Output "Setting photo for $account... This will take several seconds..."
         $pathToPhoto = Resolve-Path -Path "./photos/$alias.jpg"
         $photoData = [System.IO.File]::ReadAllBytes($pathToPhoto)
         Set-UserPhoto -Identity $account -PictureData $photoData -Confirm:$false
     }
     
 }
+
+Write-Output "`n"
+Write-Output "FINISHED!"
+Write-Output "`n"
