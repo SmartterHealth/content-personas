@@ -19,11 +19,15 @@ $g_tenantDomain = $g_tenant.TenantDomain
 $g_tenantName = $g_tenantDomain.Split(".")[0]
 $g_adminSiteUrl = "https://" + $g_tenantName + "-admin.sharepoint.com"
 
-# Log into Exchange Online
-ConnectToExo -Credentials $g_credentials
-
 # Connect to PnPOnline so we can use their nifty utilities
 Connect-PnPOnline -Url $g_adminSiteUrl -Credentials $g_credentials 
+
+if (-not (Get-Command Get-Mailbox*) )
+{
+    $exoCredentials = GetYourCredential -AdminID $AdminID -AdminPWD $AdminPWD
+    $session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/?proxymethod=rps -Credential $exoCredentials -Authentication Basic -AllowRedirection  #New-PSSession -Credential $credentials -ConfigurationName Microsoft.Exchange #-Authentication Basic -AllowRedirection
+    Import-PSSession $session -AllowClobber
+}
 
 Import-Csv -Path "./personas.csv" | ForEach-Object {
 
@@ -54,7 +58,7 @@ Import-Csv -Path "./personas.csv" | ForEach-Object {
         Write-Output "Setting photo for $account..."
         $pathToPhoto = Resolve-Path -Path "./photos/$alias.jpg"
         $photoData = [System.IO.File]::ReadAllBytes($pathToPhoto)
-        Set-UserPhoto -Identity $account -PictureData $photoData -Confirm:$Y
+        Set-UserPhoto -Identity $account -PictureData $photoData -Confirm:$false
     }
     
 }

@@ -28,6 +28,12 @@ Get-AzureADUser | ForEach-Object { (Get-UserPhoto $_.DisplayName).PictureData | 
 
 -AdminID tyler@smartterhealth.com -AdminPWD Jelp@Wonder
 
+$account = "drstrange"
+Write-Output "Setting photo for $account..."
+        $pathToPhoto = Resolve-Path -Path "./photos/z-no-photo.jpg"
+        $photoData = [System.IO.File]::ReadAllBytes($pathToPhoto)
+        Set-UserPhoto -Identity $account -PictureData $photoData -Confirm:$false
+
 
 
 The WinRM client cannot process the request. The connection string should be of the form [<transport>://]<host>[:<port>][/<suffix>] where transport is one of "http" or "https". Transport, port and suffix are optional.

@@ -19,7 +19,6 @@ $TENANT_DOMAIN = $tenant.TenantDomain
 $DEFAULT_PASSWORD = GetARandomPassword
 
 Write-Output ( "Connected to tenant $TENANT_DOMAIN" )
-Write-Output ( "The password for users will be $DEFAULT_PASSWORD"  )
 Write-Output "`n"
 
 $USERLIST = Import-Csv -Path "personas.csv" | Sort-Object -Property Manager
@@ -66,5 +65,13 @@ function ProcessUserHeirarchy() {
 
 # Grab the first level of users (users W) a manager, as they should be top-level objects with 0 or mre direct reports
 $USERLIST| Where-Object { $_.Manager -eq "" } | ForEach-Object {
-    ProcessUserHeirarchy -csvUserParent $null -csvUserCurrent $_ -level $nextLevel
+    if($_.Alias -ne $null -and $_.Alias -ne "") {
+        ProcessUserHeirarchy -csvUserParent $null -csvUserCurrent $_ -level $nextLevel
+    }
 }
+
+Write-Output "`n"
+Write-Output "FINISHED!"
+Write-Output ( "The password for all users is $DEFAULT_PASSWORD"  )
+Write-Output "Please wait 5-10 minutes before running ./ImportPersonasSpo.ps1."
+Write-Output "`n"
