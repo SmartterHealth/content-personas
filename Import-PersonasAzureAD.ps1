@@ -1,7 +1,6 @@
 Param(
     [string] $AdminID,
     [string] $AdminPWD,
-    [bool] $AccountEnabled = $true,
     [bool] $OverWrite = $true
 )
 

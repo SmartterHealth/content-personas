@@ -30,7 +30,7 @@ Function CreateUserInAzureAD
 
     $PasswordProfile = New-Object -TypeName Microsoft.Open.AzureAD.Model.PasswordProfile
     $PasswordProfile.Password = $UserData.UserPassword
-    $accountEnabled = ([System.Convert]::ToBoolean($ud.AccountEnabled))
+    $accountEnabled = $true
     $adUser = $null
 
     try {

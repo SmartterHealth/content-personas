@@ -22,7 +22,7 @@ The [SharePoint Online Management Shell](https://support.office.com/en-us/articl
 
 ## Customize Persona Data
 
-You are free to customize the Persona Data to suit your needs. Persona data is contained within the [Personas.csv](Personas.csv) file. An Excel Workbook [Personas.xlsx](Personas.xlsx) has been provided to make it easier to work with the CSV data - modify persona data within the Excel Workbook, and export as CSV. Photos are stored in the [./photos](./photos) directory. The scripts expect the name of the photo to match the user's alias.
+You are free to customize the Persona Data to suit your needs. Persona data is contained within the Personas.csv file. An Excel Workbook (Personas.xlsx) has been provided to make it easier to work with the CSV data - modify persona data within the Excel Workbook, and export as CSV. Photos are stored in the [./photos](./photos) directory. The scripts expect the name of the photo to match the user's alias.
 
 ## Customize PowerShell Scripts
 
